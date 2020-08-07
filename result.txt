@@ -1,0 +1,46 @@
+epoch: 50
+RankNet(
+  (model): Sequential(
+    (0): Linear(in_features=46, out_features=128, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=128, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=32, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=32, out_features=1, bias=True)
+  )
+)Folder: 1 Test NDCG@1: 0.49770115038444257
+Folder: 1 Test NDCG@3: 0.505598478738604
+Folder: 1 Test NDCG@5: 0.5242187796224808
+Folder: 1 Test NDCG@10: 0.5438215800143521
+Best epoch : 3
+Best train loss : 594.3644848985775
+Folder: 2 Test NDCG@1: 0.47349823416332476
+Folder: 2 Test NDCG@3: 0.4732937945493961
+Folder: 2 Test NDCG@5: 0.48418994711271024
+Folder: 2 Test NDCG@10: 0.5247262192646522
+Best epoch : 1
+Best train loss : 584.811444078106
+Folder: 3 Test NDCG@1: 0.4779661028061883
+Folder: 3 Test NDCG@3: 0.47994202317322715
+Folder: 3 Test NDCG@5: 0.4830348144143315
+Folder: 3 Test NDCG@10: 0.510894071424798
+Best epoch : 2
+Best train loss : 559.811051707296
+Folder: 4 Test NDCG@1: 0.45662100582498394
+Folder: 4 Test NDCG@3: 0.4387342110786536
+Folder: 4 Test NDCG@5: 0.4521584510930801
+Folder: 4 Test NDCG@10: 0.48615496886307247
+Best epoch : 5
+Best train loss : 564.9508108631863
+Folder: 5 Test NDCG@1: 0.4768361592696885
+Folder: 5 Test NDCG@3: 0.4669678956270218
+Folder: 5 Test NDCG@5: 0.48335937920768385
+Folder: 5 Test NDCG@10: 0.5181525311858978
+Best epoch : 6
+Best train loss : 585.5472751425568
+Ave Test NDCG@1: 0.4765245304897256
+Ave Test NDCG@3: 0.47290728063338056
+Ave Test NDCG@5: 0.48539227429005727
+Ave Test NDCG@10: 0.5167498741505545
+Ave train loss in best : 577.8970133379446
