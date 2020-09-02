@@ -76,7 +76,7 @@ batch_loss_2nd = torch.log(torch.exp(-sigma * si_sj) + 1.0)
 
 NDCG等信息检索中的评价指标只关注top k个结果的排序。由于这些指标不可导或导数不存在，当我们采用RankNet算法时，往往无法以它们为优化目标（损失函数）进行迭代，所以RankNet的优化目标和信息检索评价指标之间还是存在差距。
 
-![image](https://github.com/Hao-Junzhi/Ranknet_/blob/master/images/lambda.png)
+![image](https://github.com/Hao-Junzhi/Ranknet_/raw/master/images/lambda.png)
 具体来说，由于需要对现有的loss或loss的梯度进行改进，而NDCG等指标又不可导，我们便跳过loss，直接简单粗暴地在RankNet加速算法形式的梯度上再乘一项，以此新定义了一个Lambda梯度
 
 λ_ij=\frac{1}{1+e^{-\sigma (s_i-s_j)}*Z_ij}
