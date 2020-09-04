@@ -22,7 +22,7 @@ RankNet是一种pairwise的Learning to Rank算法，核心是通过概率的角�
 
 > RankNet有一个结论：对于任何一个长度为n的排列，只需要知道n-1个相邻item的概率$P_{i,i+1}$ ，不需要计算所有的pair，就可以推断出来任何两个item的排序概率。已知$P_{i,k}$和$P_{k,j}$，$P_{i,j}$则可通过下面的过程推导得出。数学证明如下：
 
-![image](https://latex.codecogs.com/svg.latex?P_{i,j}=\frac%20{1}{1+e^{-\sigma%20(s_i-s_j)}}\\=\frac%20{1}{1+e^{-\sigma%20(s_i-s_k+s_k-s_j)}}\\=\frac%20{e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}{1+e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}\\=\frac%20{P_{i,k}\cdot%20P_{k,j}}%20{1+2P_{i,k}%20P_{k,j}-P_{i,k}-P_{k,j}})
+![image1](https://latex.codecogs.com/svg.latex?P_{i,j}=\frac%20{1}{1+e^{-\sigma%20(s_i-s_j)}}\\=\frac%20{1}{1+e^{-\sigma%20(s_i-s_k+s_k-s_j)}}\\=\frac%20{e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}{1+e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}\\=\frac%20{P_{i,k}\cdot%20P_{k,j}}%20{1+2P_{i,k}%20P_{k,j}-P_{i,k}-P_{k,j}})
 
 
 
