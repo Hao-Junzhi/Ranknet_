@@ -1,14 +1,3 @@
-<head>
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-            inlineMath: [['$','$']]
-            }
-        });
-    </script>
-</head>
 # RankNet 算法解析
 
 ## 简介
@@ -27,20 +16,13 @@ RankNet是一种pairwise的Learning to Rank算法，核心是通过概率的角�
 
 > 对于任意的一个pair $P(U_i>U_j)$ 对于任意一个pair的doc对,模型输出的score为$(s_i,s_j)$，那么根据模型的预测，$U_i$比$U_j$与query更相关的概率定义为
 
-$$
-P_{ij} = P(U_i>U_j) = \frac{1}{1+e^{-\sigma (s_i-s_j)}}
-$$
+![image](https://latex.codecogs.com/svg.latex?P_{ij}%20=%20P(U_i%3EU_j)%20=%20\frac{1}{1+e^{-\sigma%20(s_i-s_j)}})
 
 > 由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。σ为可学习参数,决定了sigmoid函数的形状。
 
 > RankNet有一个结论：对于任何一个长度为n的排列，只需要知道n-1个相邻item的概率$P_{i,i+1}$ ，不需要计算所有的pair，就可以推断出来任何两个item的排序概率。已知$P_{i,k}$和$P_{k,j}$，$P_{i,j}$则可通过下面的过程推导得出。数学证明如下：
 
-$$
-P_{i,j}=\frac {1}{1+e^{-\sigma (s_i-s_j)}}\\
-=\frac {1}{1+e^{-\sigma (s_i-s_k+s_k-s_j)}}\\
-=\frac {e^{\sigma (s_i-s_k)}\cdot e^{-\sigma (s_k-s_j)}}{1+e^{\sigma (s_i-s_k)}\cdot e^{-\sigma (s_k-s_j)}}\\
-=\frac {P_{i,k}\cdot P_{k,j}} {1+2P_{i,k} P_{k,j}-P_{i,k}-P_{k,j}}
-$$
+![](https://latex.codecogs.com/svg.latex?P_{i,j}=\frac%20{1}{1+e^{-\sigma%20(s_i-s_j)}}\\=\frac%20{1}{1+e^{-\sigma%20(s_i-s_k+s_k-s_j)}}\\=\frac%20{e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}{1+e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}\\=\frac%20{P_{i,k}\cdot%20P_{k,j}}%20{1+2P_{i,k}%20P_{k,j}-P_{i,k}-P_{k,j}})
 
 
 
