@@ -14,13 +14,13 @@ RankNet是一种pairwise的Learning to Rank算法，核心是通过概率的角�
 
 #### 1.预测相关性概率
 
-> 对于任意的一个pair $P(U_i>U_j)$ 对于任意一个pair的doc对,模型输出的score为$(s_i,s_j)$，那么根据模型的预测，$U_i$比$U_j$与query更相关的概率定义为
+> 对于任意的一个pair ![](http://latex.codecogs.com/gif.latex?\\P(U_i>U_j)) 对于任意一个pair的doc对,模型输出的score为![](http://latex.codecogs.com/gif.latex?\\(s_i,s_j))，那么根据模型的预测，![](http://latex.codecogs.com/gif.latex?\\U_i)比![](http://latex.codecogs.com/gif.latex?\\U_j)与query更相关的概率定义为
 
 ![image](https://latex.codecogs.com/svg.latex?P_{ij}%20=%20P(U_i%3EU_j)%20=%20\frac{1}{1+e^{-\sigma%20(s_i-s_j)}})
 
 > 由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。σ为可学习参数,决定了sigmoid函数的形状。
 
-> RankNet有一个结论：对于任何一个长度为n的排列，只需要知道n-1个相邻item的概率$P_{i,i+1}$ ，不需要计算所有的pair，就可以推断出来任何两个item的排序概率。已知$P_{i,k}$和$P_{k,j}$，$P_{i,j}$则可通过下面的过程推导得出。数学证明如下：
+> RankNet有一个结论：对于任何一个长度为n的排列，只需要知道n-1个相邻item的概率![](http://latex.codecogs.com/gif.latex?\\P_{i,i+1}) ，不需要计算所有的pair，就可以推断出来任何两个item的排序概率。已知![](http://latex.codecogs.com/gif.latex?\\P_{i,k})和![](http://latex.codecogs.com/gif.latex?\\P_{k,j})，![](http://latex.codecogs.com/gif.latex?\\P_{i,j})则可通过下面的过程推导得出。数学证明如下：
 
 ![image1](https://latex.codecogs.com/svg.latex?P_{i,j}=\frac%20{1}{1+e^{-\sigma%20(s_i-s_j)}}\\=\frac%20{1}{1+e^{-\sigma%20(s_i-s_k+s_k-s_j)}}\\=\frac%20{e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}{1+e^{\sigma%20(s_i-s_k)}\cdot%20e^{-\sigma%20(s_k-s_j)}}\\=\frac%20{P_{i,k}\cdot%20P_{k,j}}%20{1+2P_{i,k}%20P_{k,j}-P_{i,k}-P_{k,j}})
 
@@ -28,13 +28,13 @@ RankNet是一种pairwise的Learning to Rank算法，核心是通过概率的角�
 
 #### 2.真实相关性概率
 
-> 训练数据中的pair的doc对$(U_i, U_j)$有一个关于query相关性的label，该label含义为：$U_{i}$比$U_{j}$与query更相关是否成立。因此，定义$U_{i}$比$U_{j}$更相关的真实概率如下：
+> 训练数据中的pair的doc对![](http://latex.codecogs.com/gif.latex?\\(U_i, U_j))有一个关于query相关性的label，该label含义为：![](http://latex.codecogs.com/gif.latex?\\U_{i})比![](http://latex.codecogs.com/gif.latex?\\U_{j})与query更相关是否成立。因此，定义$U_{i}$比$U_{j}$更相关的真实概率如下：
+>
+> ![](http://latex.codecogs.com/gif.latex?\\\overline{P_{ij}} = \frac{1+S_{ij}}{2})
 
-$$
-\overline{P_{ij}} = \frac{1+S_{ij}}{2}
-$$
 
-> 如果$U_{i}$比$U_{j}$更相关，则$S_{ij}=1$；如果$U_{i}$不如$U_{j}$相关，则$S_{ij}=-1$；如果$U_{i}$和$U_{j}$相关程度相同，则$S_{ij}=0$。
+
+> 如果![](http://latex.codecogs.com/gif.latex?\\U_{i})比![](http://latex.codecogs.com/gif.latex?\\U_{j})更相关，则![](http://latex.codecogs.com/gif.latex?\\S_{ij}=1)；如果![](http://latex.codecogs.com/gif.latex?\\U_{i})不如![](http://latex.codecogs.com/gif.latex?\\U_{j})相关，则![](http://latex.codecogs.com/gif.latex?\\S_{ij}=-1)；如果![](http://latex.codecogs.com/gif.latex?\\U_{i})和![](http://latex.codecogs.com/gif.latex?\\U_{j})相关程度相同，则![](http://latex.codecogs.com/gif.latex?\\S_{ij}=0)。
 
 ### (二)构建损失函数
 
@@ -43,16 +43,14 @@ $$
 > RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断<a href="https://www.codecogs.com/eqnedit.php?latex=U_{i}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?U_{i}" title="U_{i}" /></a>排在<a href="https://www.codecogs.com/eqnedit.php?latex=U_{j}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?U_{j}" title="U_{j}" /></a>前面，而是说<a href="https://www.codecogs.com/eqnedit.php?latex=U_{i}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?U_{i}" title="U_{i}" /></a>以一定的概率P排在<a href="https://www.codecogs.com/eqnedit.php?latex=U_{j}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?U_{j}" title="U_{j}" /></a>前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量<a href="https://www.codecogs.com/eqnedit.php?latex=P_{i,j}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?P_{i,j}" title="P_{i,j}" /></a>对<a href="https://www.codecogs.com/eqnedit.php?latex=\overline{P_{i,j}}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\overline{P_{i,j}}" title="\overline{P_{i,j}}" /></a>的拟合程度，定义如下：
 
 对于预测相关性概率和真实相关性概率，使用交叉熵函数作为损失函数
-$$
-C_{i,j}=-\overline {P_{i,j}}log(P_{i,j})-(1-\overline {P_{i,j}})log(1-P_{i,j})
-$$
 
+![](http://latex.codecogs.com/gif.latex?\\C_{i,j}=-\overline {P_{i,j}}log(P_{i,j})-(1-\overline {P_{i,j}})log(1-P_{i,j}))
 
 单个样本的交叉熵损失函数（loss）可以推导为
-$$
-C_{ij}=1/2*(1-S_{ij})*σ(s_i-s_j)+log[1+e^{-σ(s_i-s_j)}]
-$$
-此时，即使两个相关性不同的文档算出来的模型分数相同时（$s_{i}=s_{j}$），损失函数的值大于0，仍会对这对pair做惩罚，使他们的排序位置区分开。
+
+![](http://latex.codecogs.com/gif.latex?\\C_{ij}=1/2*(1-S_{ij})*\sigma (s_i-s_j)+log(1+e^{-\sigma(s_i-s_j)}) 
+
+此时，即使两个相关性不同的文档算出来的模型分数相同时![](http://latex.codecogs.com/gif.latex?\\s_{i}=s_{j})，损失函数的值大于0，仍会对这对pair做惩罚，使他们的排序位置区分开。
 
 此时损失函数和可微。
 
@@ -70,44 +68,38 @@ batch_loss_2nd = torch.log(torch.exp(-sigma * si_sj) + 1.0)
 推导如下：
 
 用随机梯度下降法来迭代更新模型参数wk：
-$$
-w_k\rightarrow w_k-\eta \frac{\partial C}{\partial w_k}
-$$
 
+![](http://latex.codecogs.com/gif.latex?\\w_k\rightarrow w_k-\eta \frac{\partial C}{\partial w_k})
 
 当使用随机梯度下降法的时候：
-$$
-\frac{\partial C}{\partial w_k} = \frac{\partial C}{\partial s_i} \frac{\partial s_i} 
-{\partial w_k}+\frac{\partial C}{\partial s_j} \frac{\partial s_j}{\partial w_k}\\
-=\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}) (\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k})\\
-=\lambda _{ij}(\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k})
-$$
-其中$\lambda _{ij}$ =$\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}) $
+
+![](http://latex.codecogs.com/gif.latex?\\\frac{\partial C}{\partial w_k} = \frac{\partial C}{\partial s_i} \frac{\partial s_i} 
+{\partial w_k}+\frac{\partial C}{\partial s_j} \frac{\partial s_j}{\partial w_k}\\=\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}(\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k})\\
+=\lambda _{ij}(\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k}))
+
+其中![](http://latex.codecogs.com/gif.latex?\\\lambda _{ij}$ =$\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}) 
 
 
 
 当转为利用批处理的梯度下降法：
-$$
-\frac{\partial C}{\partial w_k}=\displaystyle \sum \frac{\partial C}{\partial s_i} \frac{\partial s_i} 
-{\partial w_k}+\frac{\partial C}{\partial s_j} \frac{\partial s_j}{\partial w_k}
-$$
+
+![](http://latex.codecogs.com/gif.latex?\\\frac{\partial C}{\partial w_k}=\displaystyle \sum \frac{\partial C}{\partial s_i} \frac{\partial s_i} 
+{\partial w_k}+\frac{\partial C}{\partial s_j} \frac{\partial s_j}{\partial w_k})
+
 其中
-$$
-\frac{\partial C_{ij}}{\partial s_i}=\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}})=-\frac{\partial C_{ij}}{\partial s_j}
-$$
-我们让$\lambda _{ij}$ =$\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}) $
+
+![](http://latex.codecogs.com/gif.latex?\\\frac{\partial C_{ij}}{\partial s_i}=\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}=-\frac{\partial C_{ij}}{\partial s_j})
+
+我们让![](http://latex.codecogs.com/gif.latex?\\\lambda _{ij}$ =$\sigma (0.5(1-S_{ij})+\frac {1}{1+e^{\sigma (s_i-s_j)}}) 
 
 得到
-$$
-\frac{\partial C}{\partial w_k} =\displaystyle \sum\lambda _{ij}(\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k})\\
-=\displaystyle \sum \lambda _i \frac{\partial s_i}{\partial w_k}
-$$
 
+![](http://latex.codecogs.com/gif.latex?\\\frac{\partial C}{\partial w_k} =\displaystyle \sum\lambda _{ij}(\frac{\partial s_i}{\partial w_k}-\frac{\partial s_j}{\partial w_k})\\
+=\displaystyle \sum \lambda _i \frac{\partial s_i}{\partial w_k})
 
 其中 
-$$
-\lambda _i=\sum\limits_{i,j\in I} \lambda _{ij}-\sum\limits_{j,i\in I} \lambda _{ij}
-$$
+
+![](http://latex.codecogs.com/gif.latex?\\\lambda _i=\sum\limits_{i,j\in I} \lambda _{ij}-\sum\limits_{j,i\in I} \lambda _{ij})
 
 > λi决定着第i个doc在迭代中的移动方向和幅度，真实的排在Ui前面的doc越少，排在Ui后面的doc越多，那么文档Ui向前移动的幅度就越大(实际λi负的越多越向前移动)。这表明每个f下次调序的方向和强度取决于同一Query下可以与其组成relative relevance judgment的“pair对”的其他不同label的文档。
 
@@ -127,7 +119,7 @@ LambdaRank是一个经验算法，它不是通过显示定义损失函数再求�
 
 具体来说，由于需要对现有的loss或loss的梯度进行改进。而NDCG等指标又不可导，我们便跳过loss，直接简单粗暴地在RankNet加速算法形式的梯度上再乘一项，以此新定义了一个Lambda梯度
 
-$λ_{ij}=\frac{\Delta Z_{ij}}{1+e^{-\sigma (s_i-s_j)}}$
+![](http://latex.codecogs.com/gif.latex?\\\lambda_{ij}=\frac{\Delta Z_{ij}}{1+e^{-\sigma (s_i-s_j)}})
 
 评价指标Z可以为NDCG、ERR等。
 
